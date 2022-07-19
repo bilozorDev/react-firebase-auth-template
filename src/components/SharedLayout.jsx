@@ -1,5 +1,7 @@
 import React from 'react'
 import { Link, Outlet } from 'react-router-dom'
+import { UseUserAuthContext } from "../context/UserAuthContext"
+import { useNavigate } from "react-router-dom"
 
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from 'react'
@@ -29,17 +31,21 @@ function classNames(...classes) {
 
 export default function SharedLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const {currentUser, logOut} = UseUserAuthContext()
+  const navigate = useNavigate();
+
+  const handleLogOut = async () => {
+    try {
+      await logOut();
+      navigate("/");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
+    
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
@@ -129,7 +135,8 @@ export default function SharedLayout() {
                           />
                         </div>
                         <div className="ml-3">
-                          <p className="text-base font-medium text-white">Tom Cook</p>
+                          <p className="text-base font-medium text-white">{currentUser?.email}</p>
+                          <button onClick={handleLogOut}>Sign out</button>
                           <p className="text-sm font-medium text-gray-400 group-hover:text-gray-300">View profile</p>
                         </div>
                       </div>
@@ -187,7 +194,8 @@ export default function SharedLayout() {
                     />
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-white">Tom Cook</p>
+                    <p className="text-sm font-medium text-white">{currentUser?.email}</p>
+                    <button onClick={handleLogOut}>Sign out</button>
                     <p className="text-xs font-medium text-gray-300 group-hover:text-gray-200">View profile</p>
                   </div>
                 </div>

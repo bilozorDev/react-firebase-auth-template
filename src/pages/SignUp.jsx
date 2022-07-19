@@ -1,30 +1,30 @@
-/*
-  This example requires Tailwind CSS v2.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { UseUserAuthContext } from "../context/UserAuthContext"
+
 export default function SignUp() {
+  const [email, setEmail] = useState()
+  const [password, setPassword] = useState()
+  const [errorMessage, setErrorMessage] = useState()
+  const {signUp} = UseUserAuthContext();
+  const navigate = useNavigate();
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setErrorMessage("")
+    try{
+      await signUp(email, password);
+      navigate('/')
+      
+    }catch(error){
+      setErrorMessage(error.message)
+    }
+  }
+
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-50">
-        <body class="h-full">
-        ```
-      */}
+      
       <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img
@@ -38,7 +38,7 @@ export default function SignUp() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form className="space-y-6" action="#" method="POST">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Email address
@@ -51,6 +51,7 @@ export default function SignUp() {
                     autoComplete="email"
                     required
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -65,8 +66,9 @@ export default function SignUp() {
                     name="password"
                     type="password"
                     autoComplete="current-password"
-                    required
+                  
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    
                   />
                 </div>
               </div>
@@ -83,6 +85,7 @@ export default function SignUp() {
                     autoComplete="current-password"
                     required
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
